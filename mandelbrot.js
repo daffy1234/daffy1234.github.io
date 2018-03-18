@@ -145,10 +145,9 @@ $(function(){
 		});
 	});
 	$("#stop").on("click", function(){
-		cancelDrawing = true;
-		whenNotDrawing(function(){
-			cancelDrawing = false;
-		});
+		cancel(function(){
+            renderQueue = [];
+        });
 	});
 	$("#saveLoadSettings").on("click", function(){
 		var oldSettings = [x,y,width,i,quality];
@@ -177,7 +176,7 @@ $(function(){
 			ctx.canvas.width *= scale;
 			ctx.canvas.height = ctx.canvas.width * aspectRatio;
 			drawPart(0, 0, ctx.canvas.width, ctx.canvas.height, 1, function(){
-				$("<a>").attr("href", c.toDataURL()).attr("target", "_blank")[0].click();
+				popup(c.toDataURL());
 				ctx.canvas.width = $("#canvas").width();
 				ctx.canvas.height = $("#canvas").height();
 				aspectRatio = $("#canvas").height() / $("#canvas").width();
@@ -188,11 +187,20 @@ $(function(){
 		});
 	});
 	$("#screenshot").on("click", function(){
-		$("<a>").attr("href", c.toDataURL()).attr("target", "_blank")[0].click();
+		//$("<a>").attr("href", c.toDataURL()).attr("target", "_blank")[0].click();
+        popup(c.toDataURL());
 	});
 	renderQueue.push([0, 0, ctx.canvas.width, ctx.canvas.height, quality, true]);
 	render();
 });
+function popup(url){
+    var string = url;
+    var iframe = "<style>body{margin:0;}</style><iframe style='width:100%;height:100%;border:none' src='" + string + "'></iframe>"
+    var x = window.open();
+    x.document.open();
+    x.document.write(iframe);
+    x.document.close();
+}
 function translateQueue(deltaX, deltaY){
 	for (var z = 0; z < renderQueue.length; z++){
 		renderQueue[z][0] = Math.max(Math.min(renderQueue[z][0] + deltaX, ctx.canvas.width), 0);
