@@ -9,6 +9,7 @@ var drawing = false;
 var cancelDrawing = false;
 var quality = 5;
 var renderQueue = [];
+var scaleWarning = true;
 
 $(function(){
 	c = $("#canvas")[0];
@@ -169,20 +170,21 @@ $(function(){
 		whenNotDrawing(function(){
 			cancelDrawing = false;
 			var scale = parseFloat(prompt("Scale:", "1"));
-			if (scale > 2){
+			if (scaleWarning && scale > 2){
 				alert("Scales higher than 2 can cause crashes");
+                scaleWarning = false;
 				return;
 			}
 			ctx.canvas.width *= scale;
 			ctx.canvas.height = ctx.canvas.width * aspectRatio;
 			drawPart(0, 0, ctx.canvas.width, ctx.canvas.height, 1, function(){
-				popup(c.toDataURL());
+				/*popup(c.toDataURL());
 				ctx.canvas.width = $("#canvas").width();
 				ctx.canvas.height = $("#canvas").height();
 				aspectRatio = $("#canvas").height() / $("#canvas").width();
 				pixelSize = width / $("#canvas").width();
 				renderQueue.push([0, 0, ctx.canvas.width, ctx.canvas.height, quality, false]);
-				render();
+				render();*/
 			});
 		});
 	});
